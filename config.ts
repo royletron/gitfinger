@@ -5,7 +5,8 @@ import FingerError, {FingerErrorCode} from "./FingerError.ts";
 import {info} from "./logger.ts";
 
 type Friend = {
-  url: string,
+  repo: string,
+  slug: string,
   createdAt: Date,
   updatedAt: Date
 }
