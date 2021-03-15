@@ -23,7 +23,8 @@ type Config = {
   },
   friends: Record<string, Friend>,
   planfile: string,
-  editor: string
+  editor: string,
+  lastcheck?: Date,
 }
 
 const defaultConfig: Config = {

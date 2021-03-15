@@ -12,6 +12,22 @@ export async function getOrigin(path: string) {
   return out;
 }
 
+type HistoryRow = {
+  sha: string,
+  timestamp: number
+}
+
+export async function history(path: string): Promise<HistoryRow[]> {
+  info(`Getting history: ${path}`)
+  const {out, error, code} = await run(["git", "--no-pager", "log", "--pretty=format:'%H %at'"], path);
+
+  if(code == 0) {
+    const lines = out.split('\n');
+    return lines.map((line) => ({sha: line.split(' ')[0].replace('\'', ''), timestamp: parseInt(line.split(' ')[1])}))
+  }
+  return [];
+}
+
 export async function timestamp(path: string): Promise<number> {
   info(`Getting timestamp: ${path}`)
   const {out, error, code} = await run(['git', '--no-pager', 'log', '-1', '--format="%at"'], path)
@@ -20,6 +36,16 @@ export async function timestamp(path: string): Promise<number> {
     return parseInt(out.replaceAll("\"", ""));
   }
   return 0;
+}
+
+export async function checkout(path: string, commit: string): Promise<any> {
+  info(`Checking out ${commit} in ${path}`);
+  const {out, error, code} = await run(['git', 'checkout', commit], path);
+}
+
+export async function checkoutReset(path: string): Promise<any> {
+  info(`Switching ${path}`);
+  const {out, error, code} = await run(['git', 'switch', '-'], path)
 }
 
 export async function pull(path: string): Promise<any> {

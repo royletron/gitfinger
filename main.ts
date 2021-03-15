@@ -15,6 +15,10 @@ await new Command()
     global: true
   })
   .command("catchup", "Show your feed of updates")
+  .option("-d, --days [number:number]", "How many days to go back.", {
+    required: true,
+    default: 2
+  })
   .action(catchup)
   .command("init", "First time initialisation.")
   .action(init)
