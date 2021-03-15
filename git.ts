@@ -12,6 +12,16 @@ export async function getOrigin(path: string) {
   return out;
 }
 
+export async function timestamp(path: string): Promise<number> {
+  info(`Getting timestamp: ${path}`)
+  const {out, error, code} = await run(['git', '--no-pager', 'log', '-1', '--format="%at"'], path)
+
+  if(code == 0) {
+    return parseInt(out.replaceAll("\"", ""));
+  }
+  return 0;
+}
+
 export async function pull(path: string): Promise<any> {
   info(`Pulling repo: ${path}`)
   const {out, error, code} = await run(["git", "pull"], path);

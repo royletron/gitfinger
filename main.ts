@@ -3,6 +3,7 @@ import {add, list, remove} from "./friends.ts";
 import init from "./init.ts";
 import {join} from "https://deno.land/std/path/mod.ts";
 import update from "./update.ts";
+import catchup from "./catchup.ts";
 
 await new Command()
   .name("gitfinger")
@@ -13,6 +14,8 @@ await new Command()
     default: join(Deno.env.get("HOME") || "", ".finger/config.yaml"),
     global: true
   })
+  .command("catchup", "Show your feed of updates")
+  .action(catchup)
   .command("init", "First time initialisation.")
   .action(init)
   .command("update", "Write your own plafile.")
