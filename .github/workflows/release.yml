@@ -1,0 +1,47 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        name: 🥶 checkout repo
+      - uses: go-semantic-release/action@v1
+        name: 🧮 calculate version number
+        id: release
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-initial-development-versions: true
+          dry: true
+      - uses: denolib/setup-deno@v2
+        name: 🦕 setup deno
+        with:
+          deno-version: nightly
+      - name: 🧱 build packages
+        run: |
+          deno --version
+          ./release.sh ${{ steps.release.outputs.version }}
+      - uses: go-semantic-release/action@v1
+        name: 🧹 semantic release
+        id: semrel
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          changelog-file: CHANGELOG.md
+          allow-initial-development-versions: true
+          ghr: true
+      - name: 🦔 setup go
+        uses: actions/setup-go@v2
+      - name: 🌎 setup env
+        run: |
+          echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
+          echo "$(dirname $GITHUB_WORKSPACE)/bin" >> $GITHUB_PATH
+      - name: 🚛 publish packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          go get -u github.com/tcnksm/ghr
+          ghr $(cat .ghr) pkg
