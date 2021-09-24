@@ -1,5 +1,7 @@
 # gitfinger
 
+> Do dooooo do.
+
 A modern interpretation of the finger protocol.
 
 ## Masters of Doom
